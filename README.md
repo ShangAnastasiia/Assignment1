@@ -23,9 +23,106 @@ On Ubuntu, this can be accomplished by:
   * Get the location. In my case this was /usr/local/lib/python2.7/dist-packages
   * Create symlink: ln -s path/to/simulator/sr/robot /usr/local/lib/python2.7/dist-packages/sr/
   ____
-  # Open a terminal, git clone the task and run the following commands:
-
+  # To run:
+ Open a terminal, git clone the task and run the following commands:
+```
 $ python run.py Ex1.py
-  ____
+ ```
+ ____
   # Solution:
-  
+ Flowchart: ex1.drawio.png
+ 
+ ## DRIVE function
+ ____
+ The simulated robot has two motors configured for skid steering, connected to a two-output Motor Board. The left motor is connected to output 0 and the right motor to output 1.
+
+The Motor Board API is identical to that of the SR API, except that motor boards cannot be addressed by serial number. So, to turn on the spot at one quarter of full power, one might write the following:
+
+Function for setting a linear velocity with provided speed and time.
+
+Arguments: speed (int): the speed of the wheels seconds (int): the time interval
+ ```
+ def drive(speed, seconds):
+    R.motors[0].m0.power = speed
+    R.motors[0].m1.power = speed
+    time.sleep(seconds)
+    R.motors[0].m0.power = 0
+    R.motors[0].m1.power = 0
+ ```
+ ____
+## TURN function
+Function for setting an angular velocity
+
+Arguments: speed (int): the speed of the wheels seconds (int): the time interval 
+ ```
+ def turn(speed, seconds):
+    R.motors[0].m0.power = speed
+    R.motors[0].m1.power = -speed
+    time.sleep(seconds)
+    R.motors[0].m0.power = 0
+    R.motors[0].m1.power = 0
+ ```
+ ____
+ ## find_token()
+ ____
+ Function to find the closest silver token
+
+ Returns:
+distance of the closest silver token (-1 if no silver token is detected at a distance more than 3) 
+angle between the robot and the silver token (-1 if no silver token is detected at a distance more than 3)
+
+ ```
+ def find_token(): 
+    dist=10
+    for token in R.see():
+        if token.dist < dist and token.rot_y>-20 and token.rot_y< 20 and token.info.marker_type is MARKER_TOKEN_SILVER:
+            dist=token.dist
+	    rot_y=token.rot_y
+    if dist>3:
+	return -1, -1
+    else:
+   	return dist, rot_y   
+ ```
+ ____
+ ##  find_golden_token()
+ ____
+  Orientation function by side golden token
+    Returns:
+       distance to the side nearest gold token (-1 if the gold token is found in the range 89<Grot_y<91 or -89>Grot_y>-91
+       the angle between the robot and the gold token (-1 if the gold token is detected in the range 89<Grot_y<91 or -89>Grot_y>-91)
+```  
+def find_golden_token()   
+ Gdist=1.5
+    for token in R.see():
+	if token.dist < Gdist and  token.rot_y<135 and token.rot_y>45 and token.info.marker_type is MARKER_TOKEN_GOLD:
+            Gdist=token.dist
+	    Grot_y=token.rot_y
+	if token.dist < Gdist and token.rot_y>-135 and token.rot_y<-45 and token.info.marker_type is MARKER_TOKEN_GOLD:
+            Gdist=token.dist
+	    Grot_y=token.rot_y
+    if Grot_y>89 and Grot_y<91 or Grot_y<-89 and Grot_y>-91:
+	return -1, -1
+    else:
+   	return Gdist, Grot_y
+ ```
+____
+ ##  forward_token():
+ ____
+ Function to find the nearest front gold token
+    Returns:
+distance of the closest golden token (-1 if no golden token is detected at a distance more than 3)
+angle between the robot and the golden token (-1 if no golden token is detected at a distance more than 3)
+```
+ def forward_token():
+    forward=8
+    for token in R.see():
+        if token.dist < forward and token.rot_y>-5 and token.rot_y<5 and token.info.marker_type is MARKER_TOKEN_GOLD:
+            forward=token.dist
+	    rot=token.rot_y
+    if forward<3:
+	return forward, rot
+    else:
+   	return -1, -1
+ ```
+  ____
+ 
