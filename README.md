@@ -7,3 +7,5 @@ Sensors can detect boxes around all directions (from -180.0 degrees to 180.0 deg
 * constrantly drive the robot around the circuit in the counter-clockwise direction
 * avoid touching the golden boxes
 * when the robot is close to a silver box, it should grab it, and move it behind itself
+
+# The first task is in /Assignment1
