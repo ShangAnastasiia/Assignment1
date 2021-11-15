@@ -31,6 +31,8 @@ $ python run.py Ex1.py
  ____
   # Solution:
  Flowchart: ex1.drawio.png
+
+ ![Alt-текст](https://github.com/ShangAnastasiia/Assignment1/blob/main/assignment_1/ex1.drawio.png "Flowchart")
  
  ## DRIVE function
  ____
